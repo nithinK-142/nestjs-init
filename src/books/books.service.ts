@@ -14,4 +14,34 @@ export class BooksService {
     }
     return book;
   }
+
+  addBook(book: Partial<Book>): Book {
+    const newId = books[books.length - 1].id + 1;
+    const newBook: Book = {
+      id: newId,
+      title: book.title,
+      author: book.author,
+      publicationYear: book.publicationYear,
+    };
+    books.push(newBook);
+    return newBook;
+  }
+
+  updateBook(id: string, updateData: Partial<Book>): Book {
+    const bookIndex = books.findIndex((book) => book.id === parseInt(id));
+    if (bookIndex === -1) {
+      throw new NotFoundException('Book not found');
+    }
+    const updatedBook = { ...books[bookIndex], ...updateData };
+    books[bookIndex] = updatedBook;
+    return updatedBook;
+  }
+
+  deleteBook(id: string): void {
+    const bookIndex = books.findIndex((book) => book.id === parseInt(id));
+    if (bookIndex === -1) {
+      throw new NotFoundException('Book not found');
+    }
+    books.splice(bookIndex, 1);
+  }
 }
