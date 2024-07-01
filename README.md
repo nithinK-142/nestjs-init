@@ -100,4 +100,7 @@ http://localhost:3000/books
 
 # Get a specific book
 http://localhost:3000/books/1
+
+# Get a specific book in search
+http://localhost:3000/books/search?id=1
 ```
