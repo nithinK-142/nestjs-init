@@ -17,6 +17,9 @@ describe('BooksController', () => {
           useValue: {
             getAllBooks: jest.fn(),
             getBookById: jest.fn(),
+            addBook: jest.fn(),
+            updateBook: jest.fn(),
+            deleteBook: jest.fn(),
           },
         },
       ],
@@ -27,7 +30,7 @@ describe('BooksController', () => {
   });
 
   describe('getAllBooks', () => {
-    it('should return an array of books', async () => {
+    it('should return an array of books', () => {
       const result: Book[] = [
         {
           id: 1,
@@ -43,7 +46,7 @@ describe('BooksController', () => {
     });
   });
 
-  describe('getBookById', async () => {
+  describe('getBookById', () => {
     it('should return a single book when id is provided as path param', () => {
       const result: Book = {
         id: 1,
@@ -66,7 +69,7 @@ describe('BooksController', () => {
     });
   });
 
-  describe('getBooksByQuery', async () => {
+  describe('getBooksByQuery', () => {
     it('should return a single book when id is provided as query param', () => {
       const result: Book = {
         id: 1,
@@ -94,6 +97,53 @@ describe('BooksController', () => {
       expect(() => controller.getBooksByQuery('999')).toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('addBook', () => {
+    it('should add a book and return the added book', () => {
+      const newBook: Partial<Book> = {
+        title: 'New Book',
+        author: 'New Author',
+        publicationYear: 2022,
+      };
+      const result: Book = {
+        id: 2,
+        title: 'New Book',
+        author: 'New Author',
+        publicationYear: 2022,
+      };
+      jest.spyOn(service, 'addBook').mockImplementation(() => result);
+
+      expect(controller.addBook(newBook)).toBe(result);
+      expect(service.addBook).toHaveBeenCalledWith(newBook);
+    });
+  });
+
+  describe('updateBook', () => {
+    it('should update a book and return the updated book', () => {
+      const updateData: Partial<Book> = {
+        title: 'Updated Book',
+      };
+      const result: Book = {
+        id: 1,
+        title: 'Updated Book',
+        author: 'Test Author',
+        publicationYear: 2021,
+      };
+      jest.spyOn(service, 'updateBook').mockImplementation(() => result);
+
+      expect(controller.updateBook('1', updateData)).toBe(result);
+      expect(service.updateBook).toHaveBeenCalledWith('1', updateData);
+    });
+  });
+
+  describe('deleteBook', () => {
+    it('should delete a book', () => {
+      jest.spyOn(service, 'deleteBook').mockImplementation(async () => {});
+
+      expect(controller.deleteBook('1')).toBeUndefined();
+      expect(service.deleteBook).toHaveBeenCalledWith('1');
     });
   });
 });
